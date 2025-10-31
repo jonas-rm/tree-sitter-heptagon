@@ -26,6 +26,7 @@
   "->"
   "fby"
   "pre"
+  "last"
 ] @operator
 
 (lit_type) @type

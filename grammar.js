@@ -14,6 +14,10 @@ module.exports = grammar({
 
   word: $ => $.identifier,
 
+  conflicts: $ => [
+    [$.sub_expression, $.function_call],
+  ],
+
   rules: {
     source_file: $ => repeat($._definition),
 
@@ -31,14 +35,14 @@ module.exports = grammar({
     ),
 
     _function_def: $ => seq(
-        choice("fun", "node"),
-        $.identifier,
-        optional(seq("<<", $.identifier, ":", $.lit_type, ">>")),
-        $.parameter_list,
-        "returns",
-        $.parameter_list,
-        optional($.local_vars),
-        $.block,
+      choice("fun", "node"),
+      $.identifier,
+      optional(seq("<<", $.identifier, ":", $.lit_type, ">>")),
+      $.parameter_list,
+      "returns",
+      $.parameter_list,
+      optional($.local_vars),
+      $.block,
     ),
 
     parameter_list: $ => seq(
@@ -85,22 +89,36 @@ module.exports = grammar({
       ';'
     ),
 
-    var_decl: $ => seq(
+    var_decl: $ => choice(
+      $.var_decl_base,
+      $.var_decl_last,
+    ),
+
+    var_decl_base: $ => seq(
       $.identifier,
       repeat(seq(",", $.identifier)),
       ":",
       $.lit_type,
-      optional(seq(
-        '::',
-        '.',
-        repeat1(seq(
-          'on',
-          $.state_identifier,
-          '(',
-          $.identifier,
-          ')',
-        )),
+      optional($.var_decl_clock),
+    ),
+
+    var_decl_clock: $ => seq(
+      '::',
+      '.',
+      repeat1(seq(
+        'on',
+        $.state_identifier,
+        '(',
+        $.identifier,
+        ')',
       )),
+    ),
+
+    var_decl_last: $ => seq(
+      'last',
+      $.var_decl_base,
+      '=',
+      choice($.identifier, $.literal),
     ),
 
     block: $ => seq(
@@ -129,7 +147,15 @@ module.exports = grammar({
     )),
 
     equation: $ => seq(
-      $.identifier,
+      choice(
+        $.identifier,
+        seq(
+          '(',
+          $.identifier,
+          repeat(seq(',', $.identifier)),
+          ')'
+        ),
+      ),
       "=",
       $.expression,
     ),
@@ -143,10 +169,32 @@ module.exports = grammar({
       $.literal,
       $.identifier,
       seq('(', $.expression, ')'),
-      prec.left(seq($.sub_expression, $.binary_operator, $.sub_expression)),
-      prec.left(seq($.unary_operator, $.sub_expression)),
-      $.record_construction
+      prec.right(10, seq($.unary_operator, $.expression)),
+      prec.left(9, seq($.expression, $.binary_operator, $.expression)),
+      $.record_construction,
+      $.function_call,
+      $.tuple,
     ),
+
+    tuple: $ => seq(
+      '(',
+      $.expression,
+      repeat1(seq(',', $.expression)),
+      ')',
+    ),
+
+    function_call: $ => prec.left(seq(
+      $.identifier,
+      '(',
+      repeat(seq(
+        $.expression,
+        repeat(seq(
+          ',',
+          $.expression,
+        )),
+      )),
+      ')'
+    )),
 
     record_construction: $ => seq(
       '{',
@@ -218,7 +266,7 @@ module.exports = grammar({
       optional($.local_vars),
       'do',
       repeat($._statement),
-      optional($.automaton_transition),
+      repeat($.automaton_transition),
     ),
 
     automaton_transition: $ => seq(
@@ -256,19 +304,31 @@ module.exports = grammar({
     literal: $ => choice(
       $.l_number,
       $.l_bool,
+      $.l_array,
     ),
 
-    l_number: $ => /(?:\d+\.\d*|\d+|-\.\d\.)/,
+    l_number: $ => /\d+\.\d+|\d+/,
 
     l_bool: $ => choice(
       'true',
       'false',
     ),
 
+    l_array: $ => seq(
+      '[',
+      optional(seq(
+        $.expression,
+        repeat(seq(',', $.expression)),
+      )),
+      ']',
+    ),
+
     unary_operator: $ => choice(
+      '-.',
+      '-',
       'pre',
       'not',
-      'last'
+      'last',
     ),
 
     binary_operator: $ => choice(
