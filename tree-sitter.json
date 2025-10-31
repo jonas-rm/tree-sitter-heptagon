@@ -1,0 +1,41 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "heptagon",
+      "camelcase": "Heptagon",
+      "title": "heptagon",
+      "path": ".",
+      "scope": "source.heptagon",
+      "file-types": [
+        "ept"
+      ],
+      "highlights": "queries/highlights.scm",
+      "injection-regex": "^heptagon$",
+      "class-name": "TreeSitterHeptagon"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Heptagon grammar for Tree-sitter",
+    "authors": [
+      {
+        "name": "jonas-rm",
+        "url": "https://github.com/jonas-rm"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/jonas-rm/tree-sitter-heptagon"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
