@@ -20,6 +20,8 @@
   "switch"
   "reset"
   "every"
+  "default"
+  "with"
 ] @keyword
 
 [
@@ -33,4 +35,12 @@
 
 (comment) @comment
 
-(literal) @constant
+(l_number) @constant
+
+(l_bool) @constant
+
+[
+  "map"
+  "fold"
+  "mapfold"
+] @function.builtin

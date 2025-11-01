@@ -37,7 +37,7 @@ module.exports = grammar({
     _function_def: $ => seq(
       choice("fun", "node"),
       $.identifier,
-      optional(seq("<<", $.identifier, ":", $.lit_type, ">>")),
+      optional(seq("<<", $.param_var_decl_list, ">>")),
       $.parameter_list,
       "returns",
       $.parameter_list,
@@ -69,7 +69,11 @@ module.exports = grammar({
     array_type: $ => seq(
       $.lit_type,
       "^",
-      choice($.identifier, $.l_number),
+      choice(
+        seq('(', $.expression, ')'),
+        $.identifier,
+        $.l_number,
+      ),
     ),
 
     local_vars: $ => seq(
@@ -132,16 +136,14 @@ module.exports = grammar({
       $.automaton,
       $.switch_statement,
       $.present_statement,
-      // $.merge_statement,
-      $.reset_statement,
       // $.if_then_else_statement,
     ),
 
     equation_list: $ => prec.left(seq(
-      $.equation,
+      choice($.equation, $.reset_statement),
       repeat(seq(
         ';',
-        $.equation
+        choice($.equation, $.reset_statement),
       )),
       optional(';'),
     )),
@@ -161,8 +163,10 @@ module.exports = grammar({
     ),
 
     expression: $ => choice(
-      $.ifthenelse,
+      $.if_then_else_expression,
       $.sub_expression,
+      // $.merge_expression,
+      $.iterator_expression,
     ),
 
     sub_expression: $ => choice(
@@ -174,6 +178,13 @@ module.exports = grammar({
       $.record_construction,
       $.function_call,
       $.tuple,
+      $.array_access,
+    ),
+
+    iterator_expression: $ => seq(
+      choice('map', 'fold', 'mapfold'),
+      $.generic_instantiation,
+      $.function_call,
     ),
 
     tuple: $ => seq(
@@ -185,8 +196,9 @@ module.exports = grammar({
 
     function_call: $ => prec.left(seq(
       $.identifier,
+      optional($.generic_instantiation),
       '(',
-      repeat(seq(
+      optional(seq(
         $.expression,
         repeat(seq(
           ',',
@@ -195,6 +207,16 @@ module.exports = grammar({
       )),
       ')'
     )),
+
+    generic_instantiation: $ => seq(
+      '<<',
+      $.expression,
+      repeat(seq(
+        ',',
+        $.expression,
+      )),
+      '>>'
+    ),
 
     record_construction: $ => seq(
       '{',
@@ -209,7 +231,7 @@ module.exports = grammar({
       '}'
     ),
 
-    ifthenelse: $ => seq(
+    if_then_else_expression: $ => seq(
       'if',
       $.expression,
       'then',
@@ -301,6 +323,39 @@ module.exports = grammar({
       )),
     ),
 
+    array_access: $ => prec.right(seq(
+      $.identifier,
+      choice(
+        $.array_access_default,
+        $.array_access_truncated,
+        $.array_access_slice,
+        seq('[', $.expression, ']'),
+      ),
+    )),
+
+    array_access_default: $ => seq(
+      '.',
+      '[',
+      $.expression,
+      ']',
+      'default',
+      $.expression,
+    ),
+
+    array_access_truncated: $ => seq(
+      '[>',
+      $.expression,
+      '<]',
+    ),
+
+    array_access_slice: $ => seq(
+      '[',
+      $.expression,
+      '..',
+      $.expression,
+      ']',
+    ),
+
     literal: $ => choice(
       $.l_number,
       $.l_bool,
@@ -314,12 +369,29 @@ module.exports = grammar({
       'false',
     ),
 
-    l_array: $ => seq(
+    l_array: $ => choice(
+      $.l_array_extensive,
+      $.l_array_intentive,
+    ),
+
+    l_array_extensive: $ => seq(
       '[',
       optional(seq(
         $.expression,
         repeat(seq(',', $.expression)),
       )),
+      ']',
+    ),
+
+    l_array_intentive: $ => seq(
+      '[',
+      choice($.identifier, $.l_array),
+      'with',
+      '[',
+      $.expression,
+      ']',
+      '=',
+      $.expression,
       ']',
     ),
 
@@ -359,7 +431,7 @@ module.exports = grammar({
       '^'
     ),
 
-    identifier: $ => /[a-z][a-z0-9_]*[']*/,
+    identifier: $ => /[a-z][A-Za-z0-9_]*[']*/,
 
     enum_identifier: $ => /[A-Z][A-Za-z0-9_]*/,
 
