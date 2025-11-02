@@ -138,6 +138,10 @@
           "named": true
         },
         {
+          "type": "enum_identifier",
+          "named": true
+        },
+        {
           "type": "equation_list",
           "named": true
         },
@@ -147,10 +151,6 @@
         },
         {
           "type": "present_statement",
-          "named": true
-        },
-        {
-          "type": "state_identifier",
           "named": true
         },
         {
@@ -169,11 +169,11 @@
       "required": true,
       "types": [
         {
-          "type": "expression",
+          "type": "enum_identifier",
           "named": true
         },
         {
-          "type": "state_identifier",
+          "type": "expression",
           "named": true
         }
       ]
@@ -206,6 +206,21 @@
         },
         {
           "type": "switch_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "enum_type_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "enum_identifier",
           "named": true
         }
       ]
@@ -275,10 +290,21 @@
   {
     "type": "function_call",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "expression",
@@ -287,9 +313,43 @@
         {
           "type": "generic_instantiation",
           "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_def",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
         },
         {
-          "type": "identifier",
+          "type": "local_vars",
+          "named": true
+        },
+        {
+          "type": "param_var_decl_list",
+          "named": true
+        },
+        {
+          "type": "parameter_list",
           "named": true
         }
       ]
@@ -568,6 +628,25 @@
     }
   },
   {
+    "type": "record_type_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "lit_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "reset_statement",
     "named": true,
     "fields": {},
@@ -608,35 +687,15 @@
       "required": false,
       "types": [
         {
-          "type": "block",
-          "named": true
-        },
-        {
           "type": "comment",
           "named": true
         },
         {
-          "type": "enum_identifier",
+          "type": "function_def",
           "named": true
         },
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "lit_type",
-          "named": true
-        },
-        {
-          "type": "local_vars",
-          "named": true
-        },
-        {
-          "type": "param_var_decl_list",
-          "named": true
-        },
-        {
-          "type": "parameter_list",
+          "type": "type_def",
           "named": true
         }
       ]
@@ -740,6 +799,29 @@
     }
   },
   {
+    "type": "type_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "enum_type_def",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "record_type_def",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "unary_operator",
     "named": true,
     "fields": {}
@@ -795,11 +877,11 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "enum_identifier",
           "named": true
         },
         {
-          "type": "state_identifier",
+          "type": "identifier",
           "named": true
         }
       ]
@@ -1096,10 +1178,6 @@
   {
     "type": "state",
     "named": false
-  },
-  {
-    "type": "state_identifier",
-    "named": true
   },
   {
     "type": "switch",

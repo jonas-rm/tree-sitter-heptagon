@@ -5,7 +5,7 @@
  */
 
 /// <reference types="tree-sitter-cli/dsl" />
-// @ts-check
+// @ts-nocheck
 
 module.exports = grammar({
   name: "heptagon",
@@ -29,20 +29,21 @@ module.exports = grammar({
 
     _definition: $ => choice(
       $.comment,
-      $._function_def,
-      $._type_def,
+      $.function_def,
+      $.type_def,
       // TODO: $._const_def,
     ),
 
-    _function_def: $ => seq(
+    function_def: $ => seq(
       choice("fun", "node"),
-      $.identifier,
+      field('name', $.identifier),
       optional(seq("<<", $.param_var_decl_list, ">>")),
       $.parameter_list,
       "returns",
       $.parameter_list,
       optional($.local_vars),
       $.block,
+      optional(';'),
     ),
 
     parameter_list: $ => seq(
@@ -111,7 +112,9 @@ module.exports = grammar({
       '.',
       repeat1(seq(
         'on',
-        $.state_identifier,
+        choice(
+          $.enum_identifier,
+          $.identifier),
         '(',
         $.identifier,
         ')',
@@ -136,10 +139,10 @@ module.exports = grammar({
       $.automaton,
       $.switch_statement,
       $.present_statement,
-      // $.if_then_else_statement,
+      // TODO: $.if_then_else_statement,
     ),
 
-    equation_list: $ => prec.left(seq(
+    equation_list: $ => prec.right(seq(
       choice($.equation, $.reset_statement),
       repeat(seq(
         ';',
@@ -195,7 +198,7 @@ module.exports = grammar({
     ),
 
     function_call: $ => prec.left(seq(
-      $.identifier,
+      field('name', $.identifier),
       optional($.generic_instantiation),
       '(',
       optional(seq(
@@ -284,7 +287,7 @@ module.exports = grammar({
 
     automaton_state: $ => seq(
       'state',
-      $.state_identifier,
+      $.enum_identifier,
       optional($.local_vars),
       'do',
       repeat($._statement),
@@ -295,17 +298,23 @@ module.exports = grammar({
       choice('unless', 'until'),
       $.expression,
       'then',
-      $.state_identifier,
+      $.enum_identifier,
+      repeat(seq(
+        '|',
+        $.expression,
+        'then',
+        $.enum_identifier,
+      )),
     ),
 
-    _type_def: $ => seq(
+    type_def: $ => seq(
       'type',
       $.identifier,
       '=',
-      choice($._record_type_def, $._enum_type_def),
+      choice($.record_type_def, $.enum_type_def),
     ),
 
-    _record_type_def: $ => seq(
+    record_type_def: $ => seq(
       '{',
       $.identifier,
       ':',
@@ -314,7 +323,7 @@ module.exports = grammar({
       '}'
     ),
 
-    _enum_type_def: $=> seq(
+    enum_type_def: $=> seq(
       optional('|'),
       $.enum_identifier,
       repeat(seq(
@@ -434,8 +443,6 @@ module.exports = grammar({
     identifier: $ => /[a-z][A-Za-z0-9_]*[']*/,
 
     enum_identifier: $ => /[A-Z][A-Za-z0-9_]*/,
-
-    state_identifier: $ => /[A-Za-z][A-Za-z0-9_]*/,
   },
 
 });

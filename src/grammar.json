@@ -39,15 +39,15 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_function_def"
+          "name": "function_def"
         },
         {
           "type": "SYMBOL",
-          "name": "_type_def"
+          "name": "type_def"
         }
       ]
     },
-    "_function_def": {
+    "function_def": {
       "type": "SEQ",
       "members": [
         {
@@ -64,8 +64,12 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "identifier"
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
         },
         {
           "type": "CHOICE",
@@ -119,6 +123,18 @@
         {
           "type": "SYMBOL",
           "name": "block"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ";"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         }
       ]
     },
@@ -387,8 +403,17 @@
                 "value": "on"
               },
               {
-                "type": "SYMBOL",
-                "name": "state_identifier"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "enum_identifier"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                ]
               },
               {
                 "type": "STRING",
@@ -479,7 +504,7 @@
       ]
     },
     "equation_list": {
-      "type": "PREC_LEFT",
+      "type": "PREC_RIGHT",
       "value": 0,
       "content": {
         "type": "SEQ",
@@ -763,8 +788,12 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "SYMBOL",
-            "name": "identifier"
+            "type": "FIELD",
+            "name": "name",
+            "content": {
+              "type": "SYMBOL",
+              "name": "identifier"
+            }
           },
           {
             "type": "CHOICE",
@@ -1104,7 +1133,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "state_identifier"
+          "name": "enum_identifier"
         },
         {
           "type": "CHOICE",
@@ -1164,11 +1193,35 @@
         },
         {
           "type": "SYMBOL",
-          "name": "state_identifier"
+          "name": "enum_identifier"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "|"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "expression"
+              },
+              {
+                "type": "STRING",
+                "value": "then"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "enum_identifier"
+              }
+            ]
+          }
         }
       ]
     },
-    "_type_def": {
+    "type_def": {
       "type": "SEQ",
       "members": [
         {
@@ -1188,17 +1241,17 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_record_type_def"
+              "name": "record_type_def"
             },
             {
               "type": "SYMBOL",
-              "name": "_enum_type_def"
+              "name": "enum_type_def"
             }
           ]
         }
       ]
     },
-    "_record_type_def": {
+    "record_type_def": {
       "type": "SEQ",
       "members": [
         {
@@ -1247,7 +1300,7 @@
         }
       ]
     },
-    "_enum_type_def": {
+    "enum_type_def": {
       "type": "SEQ",
       "members": [
         {
@@ -1682,10 +1735,6 @@
     "enum_identifier": {
       "type": "PATTERN",
       "value": "[A-Z][A-Za-z0-9_]*"
-    },
-    "state_identifier": {
-      "type": "PATTERN",
-      "value": "[A-Za-z][A-Za-z0-9_]*"
     }
   },
   "extras": [

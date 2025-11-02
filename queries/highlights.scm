@@ -35,7 +35,7 @@
 
 (comment) @comment
 
-(l_number) @constant
+(l_number) @number
 
 (l_bool) @constant
 
@@ -44,3 +44,11 @@
   "fold"
   "mapfold"
 ] @function.builtin
+
+(function_def
+  name: (identifier) @function)
+
+(function_call
+  name: (identifier) @function)
+
+(enum_identifier) @constructor
