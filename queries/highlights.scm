@@ -22,6 +22,8 @@
   "every"
   "default"
   "with"
+  "const"
+  "open"
 ] @keyword
 
 [
@@ -38,6 +40,8 @@
 (l_number) @number
 
 (l_bool) @constant
+
+(l_string) @string
 
 [
   "map"

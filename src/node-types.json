@@ -212,6 +212,29 @@
     }
   },
   {
+    "type": "const_def",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "lit_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "enum_type_def",
     "named": true,
     "fields": {},
@@ -291,6 +314,16 @@
     "type": "function_call",
     "named": true,
     "fields": {
+      "argument": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -307,7 +340,7 @@
       "required": false,
       "types": [
         {
-          "type": "expression",
+          "type": "enum_identifier",
           "named": true
         },
         {
@@ -467,6 +500,25 @@
     "fields": {}
   },
   {
+    "type": "l_string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        },
+        {
+          "type": "string_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "lit_type",
     "named": true,
     "fields": {},
@@ -479,11 +531,11 @@
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "primitive_type",
           "named": true
         },
         {
-          "type": "primitive_type",
+          "type": "user_defined_type",
           "named": true
         }
       ]
@@ -507,6 +559,10 @@
         },
         {
           "type": "l_number",
+          "named": true
+        },
+        {
+          "type": "l_string",
           "named": true
         }
       ]
@@ -537,6 +593,21 @@
       "types": [
         {
           "type": "local_var_decl_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "module_call",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "enum_identifier",
           "named": true
         }
       ]
@@ -607,6 +678,21 @@
     "type": "primitive_type",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "record_access",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "record_construction",
@@ -687,11 +773,15 @@
       "required": false,
       "types": [
         {
-          "type": "comment",
+          "type": "const_def",
           "named": true
         },
         {
           "type": "function_def",
+          "named": true
+        },
+        {
+          "type": "module_call",
           "named": true
         },
         {
@@ -718,6 +808,10 @@
           "named": true
         },
         {
+          "type": "enum_identifier",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
@@ -731,6 +825,10 @@
         },
         {
           "type": "literal",
+          "named": true
+        },
+        {
+          "type": "record_access",
           "named": true
         },
         {
@@ -815,6 +913,10 @@
           "named": true
         },
         {
+          "type": "lit_type",
+          "named": true
+        },
+        {
           "type": "record_type_def",
           "named": true
         }
@@ -825,6 +927,25 @@
     "type": "unary_operator",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "user_defined_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "enum_identifier",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "var_decl",
@@ -909,6 +1030,10 @@
         }
       ]
     }
+  },
+  {
+    "type": "\"",
+    "named": false
   },
   {
     "type": "%",
@@ -1068,6 +1193,10 @@
     "extra": true
   },
   {
+    "type": "const",
+    "named": false
+  },
+  {
     "type": "default",
     "named": false
   },
@@ -1085,6 +1214,10 @@
   },
   {
     "type": "enum_identifier",
+    "named": true
+  },
+  {
+    "type": "escape_sequence",
     "named": true
   },
   {
@@ -1156,6 +1289,10 @@
     "named": false
   },
   {
+    "type": "open",
+    "named": false
+  },
+  {
     "type": "or",
     "named": false
   },
@@ -1178,6 +1315,14 @@
   {
     "type": "state",
     "named": false
+  },
+  {
+    "type": "string",
+    "named": false
+  },
+  {
+    "type": "string_content",
+    "named": true
   },
   {
     "type": "switch",
@@ -1213,6 +1358,10 @@
   },
   {
     "type": "with",
+    "named": false
+  },
+  {
+    "type": "xor",
     "named": false
   },
   {

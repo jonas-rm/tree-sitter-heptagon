@@ -10,6 +10,7 @@
 module.exports = grammar({
   name: "heptagon",
 
+
   extras: $ => [/\s+/, $.comment],
 
   word: $ => $.identifier,
@@ -28,10 +29,16 @@ module.exports = grammar({
     )),
 
     _definition: $ => choice(
-      $.comment,
       $.function_def,
       $.type_def,
-      // TODO: $._const_def,
+      $.const_def,
+      $.module_call,
+    ),
+
+    module_call: $ => seq(
+      'open',
+      $.enum_identifier,
+      repeat(seq('.', $.enum_identifier)),
     ),
 
     function_def: $ => seq(
@@ -58,13 +65,14 @@ module.exports = grammar({
       choice(
         $.primitive_type,
         $.array_type,
-        $.identifier,
+        $.user_defined_type,
       ),
 
     primitive_type: $ => choice(
       "bool",
       "int",
       "float",
+      "string",
     ),
 
     array_type: $ => seq(
@@ -75,6 +83,14 @@ module.exports = grammar({
         $.identifier,
         $.l_number,
       ),
+    ),
+
+    user_defined_type: $ =>  seq(
+      repeat(seq(
+        $.enum_identifier,
+        '.',
+      )),
+      $.identifier,
     ),
 
     local_vars: $ => seq(
@@ -156,9 +172,11 @@ module.exports = grammar({
         $.identifier,
         seq(
           '(',
-          $.identifier,
-          repeat(seq(',', $.identifier)),
-          ')'
+          optional(seq(
+            $.identifier,
+            repeat(seq(',', $.identifier)),
+          )),
+          ')',
         ),
       ),
       "=",
@@ -175,12 +193,14 @@ module.exports = grammar({
     sub_expression: $ => choice(
       $.literal,
       $.identifier,
+      $.enum_identifier,
       seq('(', $.expression, ')'),
       prec.right(10, seq($.unary_operator, $.expression)),
       prec.left(9, seq($.expression, $.binary_operator, $.expression)),
       $.record_construction,
       $.function_call,
       $.tuple,
+      $.record_access,
       $.array_access,
     ),
 
@@ -198,14 +218,15 @@ module.exports = grammar({
     ),
 
     function_call: $ => prec.left(seq(
+      repeat(seq($.enum_identifier, '.')),
       field('name', $.identifier),
       optional($.generic_instantiation),
       '(',
       optional(seq(
-        $.expression,
+        field('argument', $.expression),
         repeat(seq(
           ',',
-          $.expression,
+          field('argument', $.expression),
         )),
       )),
       ')'
@@ -252,7 +273,8 @@ module.exports = grammar({
         'do',
         repeat1($._statement),
       )),
-      'end'
+      'end',
+      optional(';'),
     ),
 
     present_statement: $ => seq(
@@ -307,28 +329,13 @@ module.exports = grammar({
       )),
     ),
 
-    type_def: $ => seq(
-      'type',
+    record_access: $ => seq(
       $.identifier,
-      '=',
-      choice($.record_type_def, $.enum_type_def),
-    ),
-
-    record_type_def: $ => seq(
-      '{',
+      '.',
       $.identifier,
-      ':',
-      $.lit_type,
-      repeat(seq(';', $.identifier, ':', $.lit_type)),
-      '}'
-    ),
-
-    enum_type_def: $=> seq(
-      optional('|'),
-      $.enum_identifier,
       repeat(seq(
-        '|',
-        $.enum_identifier,
+        '.',
+        $.identifier,
       )),
     ),
 
@@ -365,10 +372,46 @@ module.exports = grammar({
       ']',
     ),
 
+    type_def: $ => seq(
+      'type',
+      $.identifier,
+      '=',
+      choice($.record_type_def, $.enum_type_def, $.lit_type),
+    ),
+
+    record_type_def: $ => seq(
+      '{',
+      $.identifier,
+      ':',
+      $.lit_type,
+      repeat(seq(';', $.identifier, ':', $.lit_type)),
+      '}'
+    ),
+
+    enum_type_def: $ => seq(
+      optional('|'),
+      $.enum_identifier,
+      repeat(seq(
+        '|',
+        $.enum_identifier,
+      )),
+    ),
+
+    const_def: $ => seq(
+      'const',
+      $.identifier,
+      ':',
+      $.lit_type,
+      '=',
+      $.expression,
+      optional(';'),
+    ),
+
     literal: $ => choice(
       $.l_number,
       $.l_bool,
       $.l_array,
+      $.l_string,
     ),
 
     l_number: $ => /\d+\.\d+|\d+/,
@@ -404,6 +447,24 @@ module.exports = grammar({
       ']',
     ),
 
+    l_string: $ => choice(
+      seq('"', '"'),
+      seq('"', $._string_content, '"'),
+    ),
+
+    _string_content: $ => repeat1(choice(
+      $.string_content,
+      $.escape_sequence,
+    )),
+
+    string_content: _ => token.immediate(prec(1, /[^\\"\n]+/)),
+
+    escape_sequence: _ => token.immediate(seq(
+      '\\',
+      /(\"|\\|\/|b|f|n|r|t|u)/,
+    )),
+
+
     unary_operator: $ => choice(
       '-.',
       '-',
@@ -436,6 +497,7 @@ module.exports = grammar({
       '>',
       'and',
       'or',
+      'xor',
       '%',
       '^'
     ),
