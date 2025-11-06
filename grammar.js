@@ -55,9 +55,7 @@ module.exports = grammar({
 
     parameter_list: $ => seq(
       "(",
-      optional(seq(
-        $.param_var_decl_list,
-      )),
+      optional($.param_var_decl_list),
       ")"
     ),
 
@@ -141,21 +139,24 @@ module.exports = grammar({
       'last',
       $.var_decl_base,
       '=',
-      choice($.identifier, $.literal),
+      choice($.identifier, $.literal, $.enum_identifier),
     ),
 
     block: $ => seq(
       "let",
-      repeat($._statement),
+      optional($._statement_list),
       "tel",
     ),
+
+    _statement_list: $ => repeat1($._statement),
 
     _statement: $ => choice(
       $.equation_list,
       $.automaton,
       $.switch_statement,
       $.present_statement,
-      // TODO: $.if_then_else_statement,
+      $.if_then_else_statement,
+      $.block,
     ),
 
     equation_list: $ => prec.right(seq(
@@ -264,33 +265,40 @@ module.exports = grammar({
       $.expression,
     ),
 
-    switch_statement: $ => seq(
+    switch_statement: $ => prec.right(seq(
       'switch',
-      $.identifier,
-      repeat(seq(
-        '|',
-        $.enum_identifier,
-        'do',
-        repeat1($._statement),
-      )),
+      $.expression,
+      field('case', repeat($.switch_case)),
       'end',
       optional(';'),
+    )),
+
+    switch_case: $ => seq(
+      '|',
+      $.enum_identifier,
+      optional($.local_vars),
+      'do',
+      optional($._statement_list),
     ),
 
-    present_statement: $ => seq(
+    present_statement: $ => prec.right(seq(
       'present',
-      repeat(seq(
-        '|',
-        $.expression,
-        'do',
-        $._statement,
-      )),
+      repeat($.present_case),
       optional(seq(
         'default',
         'do',
-        $._statement,
+        $._statement_list,
       )),
-      'end'
+      'end',
+      optional(';'),
+    )),
+
+    present_case: $ => seq(
+      '|',
+      $.expression,
+      optional($.local_vars),
+      'do',
+      $._statement_list,
     ),
 
     reset_statement: $ => seq(
@@ -298,6 +306,16 @@ module.exports = grammar({
       repeat($._statement),
       'every',
       $.expression,
+    ),
+
+    if_then_else_statement: $ => seq(
+      'if',
+      $.expression,
+      'then',
+      $._statement,
+      'else',
+      $._statement,
+      'end',
     ),
 
     automaton: $ => seq(
@@ -485,12 +503,12 @@ module.exports = grammar({
       '*',
       '/',
       '<>',
-      '=<.',
-      '=<.',
+      '<=.',
+      '>=.',
       '=.',
       '<.',
       '>.',
-      '=<',
+      '<=',
       '>=',
       '=',
       '<',

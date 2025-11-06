@@ -138,11 +138,19 @@
           "named": true
         },
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "enum_identifier",
           "named": true
         },
         {
           "type": "equation_list",
+          "named": true
+        },
+        {
+          "type": "if_then_else_statement",
           "named": true
         },
         {
@@ -197,7 +205,15 @@
           "named": true
         },
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "equation_list",
+          "named": true
+        },
+        {
+          "type": "if_then_else_statement",
           "named": true
         },
         {
@@ -413,6 +429,45 @@
       "types": [
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_then_else_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "automaton",
+          "named": true
+        },
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "equation_list",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "if_then_else_statement",
+          "named": true
+        },
+        {
+          "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "switch_statement",
           "named": true
         }
       ]
@@ -644,6 +699,49 @@
     }
   },
   {
+    "type": "present_case",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "automaton",
+          "named": true
+        },
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "equation_list",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "if_then_else_statement",
+          "named": true
+        },
+        {
+          "type": "local_vars",
+          "named": true
+        },
+        {
+          "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "switch_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "present_statement",
     "named": true,
     "fields": {},
@@ -656,11 +754,19 @@
           "named": true
         },
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "equation_list",
           "named": true
         },
         {
-          "type": "expression",
+          "type": "if_then_else_statement",
+          "named": true
+        },
+        {
+          "type": "present_case",
           "named": true
         },
         {
@@ -745,11 +851,19 @@
           "named": true
         },
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "equation_list",
           "named": true
         },
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "if_then_else_statement",
           "named": true
         },
         {
@@ -847,7 +961,7 @@
     }
   },
   {
-    "type": "switch_statement",
+    "type": "switch_case",
     "named": true,
     "fields": {},
     "children": {
@@ -859,6 +973,10 @@
           "named": true
         },
         {
+          "type": "block",
+          "named": true
+        },
+        {
           "type": "enum_identifier",
           "named": true
         },
@@ -867,7 +985,11 @@
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "if_then_else_statement",
+          "named": true
+        },
+        {
+          "type": "local_vars",
           "named": true
         },
         {
@@ -876,6 +998,32 @@
         },
         {
           "type": "switch_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "switch_statement",
+    "named": true,
+    "fields": {
+      "case": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "switch_case",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -1017,6 +1165,10 @@
       "required": true,
       "types": [
         {
+          "type": "enum_identifier",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
@@ -1120,6 +1272,14 @@
     "named": false
   },
   {
+    "type": "<=",
+    "named": false
+  },
+  {
+    "type": "<=.",
+    "named": false
+  },
+  {
     "type": "<>",
     "named": false
   },
@@ -1136,14 +1296,6 @@
     "named": false
   },
   {
-    "type": "=<",
-    "named": false
-  },
-  {
-    "type": "=<.",
-    "named": false
-  },
-  {
     "type": ">",
     "named": false
   },
@@ -1153,6 +1305,10 @@
   },
   {
     "type": ">=",
+    "named": false
+  },
+  {
+    "type": ">=.",
     "named": false
   },
   {
