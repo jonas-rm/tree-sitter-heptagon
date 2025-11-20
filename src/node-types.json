@@ -24,7 +24,7 @@
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "sub_sub_expression",
           "named": true
         }
       ]
@@ -146,7 +146,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -159,6 +159,10 @@
         },
         {
           "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "reset_statement",
           "named": true
         },
         {
@@ -209,7 +213,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -218,6 +222,10 @@
         },
         {
           "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "reset_statement",
           "named": true
         },
         {
@@ -285,25 +293,6 @@
     }
   },
   {
-    "type": "equation_list",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "equation",
-          "named": true
-        },
-        {
-          "type": "reset_statement",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "expression",
     "named": true,
     "fields": {},
@@ -317,6 +306,10 @@
         },
         {
           "type": "iterator_expression",
+          "named": true
+        },
+        {
+          "type": "merge_expression",
           "named": true
         },
         {
@@ -342,10 +335,28 @@
       },
       "name": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "binary_operator",
             "named": true
           }
         ]
@@ -356,11 +367,11 @@
       "required": false,
       "types": [
         {
-          "type": "enum_identifier",
+          "type": "generic_instantiation",
           "named": true
         },
         {
-          "type": "generic_instantiation",
+          "type": "module_prefix",
           "named": true
         }
       ]
@@ -451,7 +462,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -464,6 +475,10 @@
         },
         {
           "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "reset_statement",
           "named": true
         },
         {
@@ -555,6 +570,71 @@
     "fields": {}
   },
   {
+    "type": "l_record",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "l_record_extensive",
+          "named": true
+        },
+        {
+          "type": "l_record_intentive",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "l_record_extensive",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "sub_sub_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "l_record_intentive",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "l_array",
+          "named": true
+        },
+        {
+          "type": "sub_sub_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "l_string",
     "named": true,
     "fields": {},
@@ -617,6 +697,10 @@
           "named": true
         },
         {
+          "type": "l_record",
+          "named": true
+        },
+        {
           "type": "l_string",
           "named": true
         }
@@ -654,7 +738,7 @@
     }
   },
   {
-    "type": "module_call",
+    "type": "merge_expression",
     "named": true,
     "fields": {},
     "children": {
@@ -662,10 +746,52 @@
       "required": true,
       "types": [
         {
+          "type": "sub_sub_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "module_call",
+    "named": true,
+    "fields": {
+      "module_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "enum_identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
           "type": "enum_identifier",
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "module_prefix",
+    "named": true,
+    "fields": {
+      "module_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "enum_identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -715,7 +841,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -732,6 +858,10 @@
         },
         {
           "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "reset_statement",
           "named": true
         },
         {
@@ -758,7 +888,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -774,6 +904,10 @@
           "named": true
         },
         {
+          "type": "reset_statement",
+          "named": true
+        },
+        {
           "type": "switch_statement",
           "named": true
         }
@@ -784,21 +918,6 @@
     "type": "primitive_type",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "record_access",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "identifier",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "record_construction",
@@ -855,7 +974,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -868,6 +987,10 @@
         },
         {
           "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "reset_statement",
           "named": true
         },
         {
@@ -922,6 +1045,29 @@
           "named": true
         },
         {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "sub_sub_expression",
+          "named": true
+        },
+        {
+          "type": "unary_operator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sub_sub_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
           "type": "enum_identifier",
           "named": true
         },
@@ -942,19 +1088,11 @@
           "named": true
         },
         {
-          "type": "record_access",
-          "named": true
-        },
-        {
           "type": "record_construction",
           "named": true
         },
         {
           "type": "tuple",
-          "named": true
-        },
-        {
-          "type": "unary_operator",
           "named": true
         }
       ]
@@ -981,7 +1119,7 @@
           "named": true
         },
         {
-          "type": "equation_list",
+          "type": "equation",
           "named": true
         },
         {
@@ -994,6 +1132,10 @@
         },
         {
           "type": "present_statement",
+          "named": true
+        },
+        {
+          "type": "reset_statement",
           "named": true
         },
         {
@@ -1085,11 +1227,11 @@
       "required": true,
       "types": [
         {
-          "type": "enum_identifier",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "module_prefix",
           "named": true
         }
       ]
@@ -1165,15 +1307,7 @@
       "required": true,
       "types": [
         {
-          "type": "enum_identifier",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "literal",
+          "type": "sub_sub_expression",
           "named": true
         },
         {
@@ -1430,6 +1564,10 @@
   },
   {
     "type": "mapfold",
+    "named": false
+  },
+  {
+    "type": "merge",
     "named": false
   },
   {

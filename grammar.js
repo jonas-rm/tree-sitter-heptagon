@@ -16,7 +16,9 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   conflicts: $ => [
-    [$.sub_expression, $.function_call],
+    [$.sub_sub_expression, $.module_prefix],
+    [$.sub_sub_expression, $.function_call],
+    [$.merge_expression, $.merge_expression],
   ],
 
   rules: {
@@ -37,7 +39,7 @@ module.exports = grammar({
 
     module_call: $ => seq(
       'open',
-      $.enum_identifier,
+      field('module_name', $.enum_identifier),
       repeat(seq('.', $.enum_identifier)),
     ),
 
@@ -84,10 +86,7 @@ module.exports = grammar({
     ),
 
     user_defined_type: $ =>  seq(
-      repeat(seq(
-        $.enum_identifier,
-        '.',
-      )),
+      repeat($.module_prefix),
       $.identifier,
     ),
 
@@ -129,17 +128,21 @@ module.exports = grammar({
         choice(
           $.enum_identifier,
           $.identifier),
-        '(',
-        $.identifier,
-        ')',
+        optional(seq(
+          '(',
+          $.identifier,
+          ')',
+        )),
       )),
     ),
 
     var_decl_last: $ => seq(
       'last',
       $.var_decl_base,
-      '=',
-      choice($.identifier, $.literal, $.enum_identifier),
+      optional(seq(
+        '=',
+        $.sub_sub_expression,
+      )),
     ),
 
     block: $ => seq(
@@ -148,25 +151,24 @@ module.exports = grammar({
       "tel",
     ),
 
-    _statement_list: $ => repeat1($._statement),
+    _statement_list: $ => seq(
+      $._statement,
+      repeat(seq(
+        ';',
+        $._statement,
+      )),
+      optional(';'),
+    ),
 
     _statement: $ => choice(
-      $.equation_list,
+      $.equation,
+      $.reset_statement,
       $.automaton,
       $.switch_statement,
       $.present_statement,
       $.if_then_else_statement,
       $.block,
     ),
-
-    equation_list: $ => prec.right(seq(
-      choice($.equation, $.reset_statement),
-      repeat(seq(
-        ';',
-        choice($.equation, $.reset_statement),
-      )),
-      optional(';'),
-    )),
 
     equation: $ => seq(
       choice(
@@ -187,22 +189,32 @@ module.exports = grammar({
     expression: $ => choice(
       $.if_then_else_expression,
       $.sub_expression,
-      // $.merge_expression,
+      prec.right(10, $.merge_expression),
+      // $.when_expression,
       $.iterator_expression,
     ),
 
     sub_expression: $ => choice(
+      $.sub_sub_expression,
+      prec.right(10, seq($.unary_operator, $.expression)),
+      prec.left(9, seq($.expression, $.binary_operator, $.expression)),
+      prec.right(9, $.array_access),
+    ),
+
+    sub_sub_expression: $ => choice(
       $.literal,
       $.identifier,
       $.enum_identifier,
-      seq('(', $.expression, ')'),
-      prec.right(10, seq($.unary_operator, $.expression)),
-      prec.left(9, seq($.expression, $.binary_operator, $.expression)),
       $.record_construction,
       $.function_call,
       $.tuple,
-      $.record_access,
-      $.array_access,
+      seq('(', $.expression, ')'),
+    ),
+
+    merge_expression: $ => seq(
+      'merge',
+      $.sub_sub_expression,
+      repeat1($.sub_sub_expression),
     ),
 
     iterator_expression: $ => seq(
@@ -219,9 +231,20 @@ module.exports = grammar({
     ),
 
     function_call: $ => prec.left(seq(
-      repeat(seq($.enum_identifier, '.')),
-      field('name', $.identifier),
-      optional($.generic_instantiation),
+      repeat($.module_prefix),
+      choice(
+        seq(
+          field('name', $.identifier),
+          optional($.generic_instantiation),
+        ),
+        seq(
+          '(',
+          field('name', $.identifier),
+          optional($.generic_instantiation),
+          ')'
+        ),
+        field('operator', seq('(', $.binary_operator, ')')),
+      ),
       '(',
       optional(seq(
         field('argument', $.expression),
@@ -241,6 +264,11 @@ module.exports = grammar({
         $.expression,
       )),
       '>>'
+    ),
+
+    module_prefix: $=>seq(
+      field('module_name', $.enum_identifier),
+      '.',
     ),
 
     record_construction: $ => seq(
@@ -270,7 +298,6 @@ module.exports = grammar({
       $.expression,
       field('case', repeat($.switch_case)),
       'end',
-      optional(';'),
     )),
 
     switch_case: $ => seq(
@@ -290,7 +317,6 @@ module.exports = grammar({
         $._statement_list,
       )),
       'end',
-      optional(';'),
     )),
 
     present_case: $ => seq(
@@ -312,9 +338,9 @@ module.exports = grammar({
       'if',
       $.expression,
       'then',
-      $._statement,
+      $._statement_list,
       'else',
-      $._statement,
+      $._statement_list,
       'end',
     ),
 
@@ -330,7 +356,7 @@ module.exports = grammar({
       $.enum_identifier,
       optional($.local_vars),
       'do',
-      repeat($._statement),
+      optional($._statement_list),
       repeat($.automaton_transition),
     ),
 
@@ -347,18 +373,34 @@ module.exports = grammar({
       )),
     ),
 
-    record_access: $ => seq(
-      $.identifier,
+    l_record: $ => choice(
+      $.l_record_extensive,
+      $.l_record_intentive,
+    ),
+
+    l_record_extensive: $ => prec.right(seq(
+      $.sub_sub_expression,
       '.',
       $.identifier,
       repeat(seq(
         '.',
         $.identifier,
       )),
+    )),
+
+    l_record_intentive: $ => seq(
+      '{',
+      choice($.identifier, $.l_array),
+      'with',
+      '.',
+      $.sub_sub_expression,
+      '=',
+      $.expression,
+      '}',
     ),
 
     array_access: $ => prec.right(seq(
-      $.identifier,
+      $.sub_sub_expression,
       choice(
         $.array_access_default,
         $.array_access_truncated,
@@ -429,6 +471,7 @@ module.exports = grammar({
       $.l_number,
       $.l_bool,
       $.l_array,
+      $.l_record,
       $.l_string,
     ),
 

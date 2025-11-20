@@ -25,6 +25,7 @@
   "with"
   "const"
   "open"
+  "merge"
 ] @keyword
 
 [
@@ -32,6 +33,10 @@
   "fby"
   "pre"
   "last"
+  "or"
+  "and"
+  "not"
+  "xor"
 ] @operator
 
 (lit_type) @type
@@ -55,5 +60,11 @@
 
 (function_call
   name: (identifier) @function)
+
+(module_prefix
+  module_name: (enum_identifier) @module)
+
+(module_call
+  module_name: (enum_identifier) @module)
 
 (enum_identifier) @constructor
