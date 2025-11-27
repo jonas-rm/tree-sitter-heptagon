@@ -363,12 +363,12 @@ module.exports = grammar({
     automaton_transition: $ => seq(
       choice('unless', 'until'),
       $.expression,
-      'then',
+      choice('then', 'continue'),
       $.enum_identifier,
       repeat(seq(
         '|',
         $.expression,
-        'then',
+        choice('then', 'continue'),
         $.enum_identifier,
       )),
     ),

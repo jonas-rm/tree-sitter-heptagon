@@ -9,6 +9,7 @@
   "tel"
   "if"
   "then"
+  "continue"
   "else"
   "automaton"
   "state"

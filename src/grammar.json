@@ -1493,8 +1493,17 @@
           "name": "expression"
         },
         {
-          "type": "STRING",
-          "value": "then"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "then"
+            },
+            {
+              "type": "STRING",
+              "value": "continue"
+            }
+          ]
         },
         {
           "type": "SYMBOL",
@@ -1514,8 +1523,17 @@
                 "name": "expression"
               },
               {
-                "type": "STRING",
-                "value": "then"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "then"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "continue"
+                  }
+                ]
               },
               {
                 "type": "SYMBOL",
