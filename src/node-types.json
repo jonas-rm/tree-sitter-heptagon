@@ -315,6 +315,10 @@
         {
           "type": "sub_expression",
           "named": true
+        },
+        {
+          "type": "when_expression",
+          "named": true
         }
       ]
     }
@@ -1318,6 +1322,21 @@
     }
   },
   {
+    "type": "when_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "sub_sub_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "\"",
     "named": false
   },
@@ -1652,6 +1671,14 @@
   },
   {
     "type": "var",
+    "named": false
+  },
+  {
+    "type": "when",
+    "named": false
+  },
+  {
+    "type": "whenot",
     "named": false
   },
   {

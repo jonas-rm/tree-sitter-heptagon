@@ -190,7 +190,7 @@ module.exports = grammar({
       $.if_then_else_expression,
       $.sub_expression,
       prec.right(10, $.merge_expression),
-      // $.when_expression,
+      $.when_expression,
       $.iterator_expression,
     ),
 
@@ -215,6 +215,12 @@ module.exports = grammar({
       'merge',
       $.sub_sub_expression,
       repeat1($.sub_sub_expression),
+    ),
+
+    when_expression: $ => seq(
+      $.sub_sub_expression,
+      choice('when', 'whenot'),
+      $.sub_sub_expression,
     ),
 
     iterator_expression: $ => seq(
@@ -338,9 +344,9 @@ module.exports = grammar({
       'if',
       $.expression,
       'then',
-      $._statement_list,
+      optional($._statement_list),
       'else',
-      $._statement_list,
+      optional($._statement_list),
       'end',
     ),
 

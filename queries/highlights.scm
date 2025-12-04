@@ -27,6 +27,8 @@
   "const"
   "open"
   "merge"
+  "when"
+  "whenot"
 ] @keyword
 
 [

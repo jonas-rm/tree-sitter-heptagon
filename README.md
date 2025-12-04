@@ -133,7 +133,3 @@ Then, open the settings of the tree-sitter extension, chose to
 Which registers the Heptagon parser. Do not forget to replace with the actual
 path to where the parser is on your machine.
 
-## To-Do's
-
-- [ ] `merge`
-- [x] reset

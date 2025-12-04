@@ -715,6 +715,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "when_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "iterator_expression"
         }
       ]
@@ -837,6 +841,32 @@
             "type": "SYMBOL",
             "name": "sub_sub_expression"
           }
+        }
+      ]
+    },
+    "when_expression": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "sub_sub_expression"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "when"
+            },
+            {
+              "type": "STRING",
+              "value": "whenot"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sub_sub_expression"
         }
       ]
     },
@@ -1375,16 +1405,32 @@
           "value": "then"
         },
         {
-          "type": "SYMBOL",
-          "name": "_statement_list"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_statement_list"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
           "value": "else"
         },
         {
-          "type": "SYMBOL",
-          "name": "_statement_list"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_statement_list"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
